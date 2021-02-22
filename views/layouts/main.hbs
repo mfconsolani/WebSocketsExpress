@@ -1,0 +1,29 @@
+<div class="container">
+{{#if data}}
+    <table class="table m-3 table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th class="text-center">Nombre</th>
+            <th class="text-center">Precio</th>
+            <th class="text-center">Foto</th>
+        </tr>
+        </thead>
+        {{#each data}}
+        <tbody class="">
+        <tr class="container">
+            <td class="align-middle text-center">{{this.title}}</td>
+            <td class="align-middle text-center">US$ {{this.price}}</td>
+            <td class="align-middle text-center"><img src="{{this.thumbnail}}" style="height: 100px" alt="{{this.title}}"></td>
+        </tr>
+        </tbody>
+        {{/each}}
+    </table>
+    
+{{else}}
+    <div class="container">
+        <div class="alert alert-danger text-center align-middle m-5" role="alert">
+            <p>No se encontraron productos</p>
+        </div>
+    </div>
+{{/if}}
+</div>
