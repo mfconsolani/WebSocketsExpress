@@ -114,6 +114,11 @@ form.addEventListener('submit', function(e) {
 });
 
 socket.on('nuevo producto', data => {   
+    
+    if (document.body.contains(document.getElementById('alertDiv'))) {
+        document.getElementById('alertDiv').setAttribute("style", "display: none;")   
+    }
+    
     renderItem(data)
 });
 
