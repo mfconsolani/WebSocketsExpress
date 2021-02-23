@@ -116,3 +116,4 @@ form.addEventListener('submit', function(e) {
 socket.on('nuevo producto', data => {   
     renderItem(data)
 });
+
