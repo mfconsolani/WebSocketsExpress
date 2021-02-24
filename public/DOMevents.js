@@ -8,22 +8,22 @@ const price = document.getElementById('price');
 
 const thumbnail = document.getElementById('thumbnail');
 
-const tableBody = document.getElementById('tbody')
+const tableBody = document.getElementById('tbody');
 
-const table = document.getElementById('table')
+const table = document.getElementById('table');
 
-const tableContainer = document.getElementById('tableContainer')
+const tableContainer = document.getElementById('tableContainer');
 
 
 const renderItem = (product) => {
 
-    const nuevaFila = document.createElement('tr')
+    const nuevaFila = document.createElement('tr');
 
     tableBody.appendChild(nuevaFila)
     
     // titulo
 
-    let nuevoTitulo = document.createElement('td')
+    let nuevoTitulo = document.createElement('td');
     
     nuevoTitulo.textContent = product.title
     
