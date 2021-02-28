@@ -39,7 +39,10 @@ io.on('connection', (socket) => {
     console.log('Usuario conectado');
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
-            fs_1.default.promises.appendFile('./messages.txt', JSON.stringify(chatMessages));
+            fs_1.default.appendFile('./messages.txt', JSON.stringify(chatMessages), 'utf8', (err) => {
+                if (err)
+                    throw err;
+            });
             chatMessages = [];
         }
     });
