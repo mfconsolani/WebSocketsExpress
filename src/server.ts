@@ -12,6 +12,8 @@ import { Socket } from 'socket.io';
 
 import MetodosServidor from './handlerClass';
 
+import fs from 'fs';
+
 // Global variables
 
 const app:Application = require('express')();
@@ -62,6 +64,7 @@ io.on('connection', (socket:Socket) => {
 
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
+            fs.promises.appendFile('./messages.txt', JSON.stringify(chatMessages))
             chatMessages = []
         }
       });

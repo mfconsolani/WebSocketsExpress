@@ -10,6 +10,7 @@ const viewsRoutes_1 = require("./viewsRoutes");
 const path_1 = __importDefault(require("path"));
 const express_handlebars_1 = __importDefault(require("express-handlebars"));
 const handlerClass_1 = __importDefault(require("./handlerClass"));
+const fs_1 = __importDefault(require("fs"));
 // Global variables
 const app = require('express')();
 const http = require('http').Server(app);
@@ -38,6 +39,7 @@ io.on('connection', (socket) => {
     console.log('Usuario conectado');
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
+            fs_1.default.promises.appendFile('./messages.txt', JSON.stringify(chatMessages));
             chatMessages = [];
         }
     });
