@@ -36,7 +36,12 @@ const server = http.listen(PORT, () => {
 });
 io.on('connection', (socket) => {
     console.log('Usuario conectado');
-    socket.emit('ingreso', productos);
+    socket.on('disconnect', () => {
+        if (io.engine.clientsCount === 0) {
+            chatMessages = [];
+        }
+    });
+    socket.emit('ingreso', { productos, chatMessages });
     socket.on('producto cargado', (data) => {
         io.emit('nuevo producto', data);
         productos.push(data);

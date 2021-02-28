@@ -77,15 +77,30 @@ const renderAlert = () => {
     alertDiv.appendChild(alertContent)
 }
 
-socket.on('ingreso', productos => {
+const renderMessages = (payload) => {
+    let html = payload.map(element => {
+        return(`<div>
+        <span style="color: blue; font-weight: bold;">
+        ${element.user} <span style="color: brown; font-weight: normal;">[${element.date}]</span>
+        </span>:
+        <em style="color: green">${element.message}</em> </div>`)
+    }).join(" ");
+    document.getElementById('chatContainer').innerHTML = html
+}
+
+socket.on('ingreso', payload => {
     
-    if (productos.length) {
+    if (payload.productos.length) {
         
-        productos.forEach(prod => renderItem(prod)) 
+        payload.productos.forEach(prod => renderItem(prod)) 
         
     } else {
         
         renderAlert()
+    }
+
+    if (payload.chatMessages.length) {
+        renderMessages(payload.chatMessages);
     }
 
 });
@@ -149,14 +164,7 @@ socket.on('nuevo producto', data => {
 
 
 socket.on('chat', payload => {
-    let html = payload.map(element => {
-        return(`<div>
-        <span style="color: blue; font-weight: bold;">
-        ${element.user} <span style="color: brown; font-weight: normal;">[${element.date}]</span>
-        </span>:
-        <em style="color: green">${element.message}</em> </div>`)
-    }).join(" ");
-    document.getElementById('chatContainer').innerHTML = html
+    renderMessages(payload)
 })
 
 

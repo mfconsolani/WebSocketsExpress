@@ -66,7 +66,7 @@ io.on('connection', (socket:Socket) => {
         }
       });
 
-    socket.emit('ingreso', productos)
+    socket.emit('ingreso', {productos, chatMessages})
 
     socket.on('producto cargado', (data:any) => {
         io.emit('nuevo producto', data);
