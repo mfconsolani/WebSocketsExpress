@@ -26,6 +26,8 @@ let productos:Array<object> = []
 
 export let instance = new MetodosServidor([]);
 
+let chatMessages:any = []
+
 
 // Middleware
 
@@ -58,11 +60,22 @@ const server:any = http.listen(PORT, () => {
 io.on('connection', (socket:Socket) => {
     console.log('Usuario conectado')
 
+    socket.on('disconnect', () => {
+        if (io.engine.clientsCount === 0) {
+            chatMessages = []
+        }
+      });
+
     socket.emit('ingreso', productos)
 
     socket.on('producto cargado', (data:any) => {
         io.emit('nuevo producto', data);
         productos.push(data);
+    })
+
+    socket.on('new message', (payload:any) => {
+        chatMessages.push(payload)
+        io.emit('chat', chatMessages);
     })
 
 })

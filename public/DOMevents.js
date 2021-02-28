@@ -14,6 +14,9 @@ const table = document.getElementById('table');
 
 const tableContainer = document.getElementById('tableContainer');
 
+const user = document.getElementById('email')
+
+const chatForm = document.getElementById('chatForm')
 
 const renderItem = (product) => {
 
@@ -113,6 +116,28 @@ form.addEventListener('submit', function(e) {
     }
 });
 
+
+const addMessage = () => {
+
+    let message = document.getElementById('messageToSend').value
+    let userEmail = user.value
+    let date = new Date
+    date = date.toLocaleString()
+    socket.emit('new message', {
+        user: userEmail, 
+        message: message,
+        date: date})
+    
+        document.getElementById('messageToSend').value = ''
+
+    return
+}
+
+chatForm.addEventListener('submit', e => {
+    e.preventDefault();
+    addMessage()  
+})
+
 socket.on('nuevo producto', data => {   
     
     if (document.body.contains(document.getElementById('alertDiv'))) {
@@ -121,4 +146,17 @@ socket.on('nuevo producto', data => {
     
     renderItem(data)
 });
+
+
+socket.on('chat', payload => {
+    let html = payload.map(element => {
+        return(`<div>
+        <span style="color: blue; font-weight: bold;">
+        ${element.user} <span style="color: brown; font-weight: normal;">[${element.date}]</span>
+        </span>:
+        <em style="color: green">${element.message}</em> </div>`)
+    }).join(" ");
+    document.getElementById('chatContainer').innerHTML = html
+})
+
 

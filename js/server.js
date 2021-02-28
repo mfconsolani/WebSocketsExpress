@@ -17,6 +17,7 @@ const io = require('socket.io')(http);
 const PORT = 8080;
 let productos = [];
 exports.instance = new handlerClass_1.default([]);
+let chatMessages = [];
 // Middleware
 app.engine('hbs', express_handlebars_1.default({
     extname: '.hbs',
@@ -39,6 +40,10 @@ io.on('connection', (socket) => {
     socket.on('producto cargado', (data) => {
         io.emit('nuevo producto', data);
         productos.push(data);
+    });
+    socket.on('new message', (payload) => {
+        chatMessages.push(payload);
+        io.emit('chat', chatMessages);
     });
 });
 server.on("Error", (error) => {
