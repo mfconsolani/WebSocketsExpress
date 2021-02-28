@@ -19,7 +19,7 @@ const renderItem = (product) => {
 
     const nuevaFila = document.createElement('tr');
 
-    tableBody.appendChild(nuevaFila)
+    tableBody.appendChild(nuevaFila);
     
     // titulo
 
@@ -27,11 +27,11 @@ const renderItem = (product) => {
     
     nuevoTitulo.textContent = product.title
     
-    nuevaFila.appendChild(nuevoTitulo)
+    nuevaFila.appendChild(nuevoTitulo);
     
     // precio
     
-    let nuevoPrecio = document.createElement('td')
+    let nuevoPrecio = document.createElement('td');
     
     nuevoPrecio.textContent = `US$ ${product.price}`
     
