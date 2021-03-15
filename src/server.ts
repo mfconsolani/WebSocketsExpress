@@ -14,6 +14,8 @@ import MetodosServidor from './handlerClass';
 
 import fs from 'fs';
 
+import { checkIfTable, createTableMensajes, saveMessagesInDB } from './functionKnex';
+
 // Global variables
 
 const app:Application = require('express')();
@@ -55,6 +57,7 @@ app.use(express.urlencoded({extended: true}));
 // Server Port config
 
 const server:any = http.listen(PORT, () => {
+    checkIfTable(createTableMensajes, 'mensajes');
     console.log(`Servidor escuchando en puerto ${server.address().port}`)
 });
 
@@ -67,6 +70,7 @@ io.on('connection', (socket:Socket) => {
             fs.appendFile('./messages.txt', JSON.stringify(chatMessages), 'utf8', (err) => {
                 if (err) throw err;
               });
+            saveMessagesInDB(chatMessages);
             chatMessages = []
         }
       });
