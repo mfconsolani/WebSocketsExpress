@@ -11,6 +11,7 @@ const path_1 = __importDefault(require("path"));
 const express_handlebars_1 = __importDefault(require("express-handlebars"));
 const handlerClass_1 = __importDefault(require("./handlerClass"));
 const fs_1 = __importDefault(require("fs"));
+const functionKnex_1 = require("./functionKnex");
 // Global variables
 const app = require('express')();
 const http = require('http').Server(app);
@@ -33,6 +34,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Server Port config
 const server = http.listen(PORT, () => {
+    functionKnex_1.checkIfTable(functionKnex_1.createTableMensajes, 'mensajes');
     console.log(`Servidor escuchando en puerto ${server.address().port}`);
 });
 io.on('connection', (socket) => {
@@ -43,6 +45,7 @@ io.on('connection', (socket) => {
                 if (err)
                     throw err;
             });
+            functionKnex_1.saveMessagesInDB(chatMessages);
             chatMessages = [];
         }
     });
