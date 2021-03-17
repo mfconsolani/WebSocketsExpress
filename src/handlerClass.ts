@@ -27,21 +27,14 @@ class MetodosServidor{
     };
 
     displayOne(request: Request, response: Response){
-
         let { id }:any = request.params;
-
         id = parseInt(id);
-        
         const productSearched = this.database.filter((product: Product) => product.id === id)[0];
-
         if (id !== 0 && this.database.length && productSearched){
-
             return response.status(200).json(productSearched)
         } 
-        
         return response.status(200).send({ alerta: 'producto no encontrado' })
     }
-
     saveProduct(request: Request, response: Response){
 
         const newId:number =  this.database.length == 0 ? 1 : this.database.slice(-1)[0].id +1 
