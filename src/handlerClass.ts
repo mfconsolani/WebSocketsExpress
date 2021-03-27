@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import path from 'path';
 
-
 export interface Product {
     title: string,
     price: number,
