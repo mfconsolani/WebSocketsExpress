@@ -12,9 +12,10 @@ import { Socket } from 'socket.io';
 
 import MetodosServidor from './handlerClass';
 
-import fs from 'fs';
+import { Mensaje } from './menasjesModel';
 
-import { checkIfTable, createTableMensajes, saveMessagesInDB } from './functionKnex';
+import mongoose from 'mongoose';
+
 
 // Global variables
 
@@ -54,10 +55,28 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
+// Mongoose
+
+CRUD()
+
+async function CRUD() {
+    try {
+        const URL = 'mongodb://localhost:27017/ecommerce'
+
+        let response = await mongoose.connect(URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false
+        })
+        console.log('Conectado a MongoDB')
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 // Server Port config
 
 const server:any = http.listen(PORT, () => {
-    checkIfTable(createTableMensajes, 'mensajes');
     console.log(`Servidor escuchando en puerto ${server.address().port}`)
 });
 
@@ -67,10 +86,11 @@ io.on('connection', (socket:Socket) => {
 
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
-            fs.appendFile('./messages.txt', JSON.stringify(chatMessages), 'utf8', (err) => {
-                if (err) throw err;
-              });
-            saveMessagesInDB(chatMessages);
+            console.log(chatMessages)
+            chatMessages.forEach(async (mensaje:any) => {
+                let saveMessages = new Mensaje(mensaje)
+                await saveMessages.save()
+            })
             chatMessages = []
         }
       });
