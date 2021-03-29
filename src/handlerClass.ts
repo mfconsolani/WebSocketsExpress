@@ -10,14 +10,11 @@ export interface Product {
 };
 
 class MetodosServidor{
-
     database: Array<Product>;
-    
     constructor(database: Array<Product>){
-
         this.database = database;
     };
-    
+
     displayAll(response: Response){
         
         this.database.length 
