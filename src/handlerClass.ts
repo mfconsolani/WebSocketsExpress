@@ -32,20 +32,16 @@ class MetodosServidor{
         return response.status(200).send({ alerta: 'producto no encontrado' })
     }
     saveProduct(request: Request, response: Response){
-
+        
         const newId:number =  this.database.length == 0 ? 1 : this.database.slice(-1)[0].id +1 
-
         let {title, price, thumbnail }: any = request.body
-
         price = parseFloat(price);
-
         const nuevoItem: Product =  { 
             title,
             price,
             thumbnail,
             id: newId
         };
-
         this.database.push(nuevoItem)
         
         request.headers['content-type'] === 'application/x-www-form-urlencoded'
@@ -55,14 +51,9 @@ class MetodosServidor{
     }
 
     replaceData(request: Request, response: Response){
-
         let { id }:any = request.params
-
         id = parseInt(id);
-
-        let itemToModify: any = this.database.filter(element => element.id === id)[0]   
-
-        
+        let itemToModify: any = this.database.filter(element => element.id === id)[0]        
         if (id !== 0 && this.database.length && itemToModify){
             
             const propsToReplace = Object
