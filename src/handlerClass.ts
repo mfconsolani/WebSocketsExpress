@@ -71,13 +71,9 @@ class MetodosServidor{
     }
 
     deleteItem(request: Request, response: Response){
-
         let { id }:any = request.params
-
         id = parseInt(id)
-
         const itemToRemove = this.database.filter(element => element.id === id)[0]
-
         if (id !== 0 && this.database.length && itemToRemove){
 
             this.database = this.database.filter(element => element.id !== id) 
