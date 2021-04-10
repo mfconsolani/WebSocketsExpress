@@ -14,13 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.instance = void 0;
 const express_1 = __importDefault(require("express"));
-const productRoutes_1 = require("./productRoutes");
-const viewsRoutes_1 = require("./viewsRoutes");
+const productRoutes_1 = require("./routes/productRoutes");
+const viewsRoutes_1 = require("./routes/viewsRoutes");
 const path_1 = __importDefault(require("path"));
 const express_handlebars_1 = __importDefault(require("express-handlebars"));
 const handlerClass_1 = __importDefault(require("./handlerClass"));
-const menasjesModel_1 = require("./menasjesModel");
-const mongoose_1 = __importDefault(require("mongoose"));
+const mensajesModel_1 = require("./db/mensajesModel");
+const normalizrSchemas_1 = require("./normalizrSchemas/normalizrSchemas");
+const normalizr_1 = require("normalizr");
+const socketNewMessage_1 = require("./utilities/socketNewMessage");
+const config_1 = require("./db/config");
 // Global variables
 const app = require('express')();
 const http = require('http').Server(app);
@@ -29,6 +32,7 @@ const PORT = 8080;
 let productos = [];
 exports.instance = new handlerClass_1.default([]);
 let chatMessages = [];
+let chatMessagesFormatted = [];
 // Middleware
 app.engine('hbs', express_handlebars_1.default({
     extname: '.hbs',
@@ -41,24 +45,8 @@ app.set('views', './views');
 app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-// Mongoose
-CRUD();
-function CRUD() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const URL = 'mongodb://localhost:27017/ecommerce';
-            let response = yield mongoose_1.default.connect(URL, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useFindAndModify: false
-            });
-            console.log('Conectado a MongoDB');
-        }
-        catch (e) {
-            console.log(e);
-        }
-    });
-}
+// DB & Mongoose
+config_1.CRUD();
 // Server Port config
 const server = http.listen(PORT, () => {
     console.log(`Servidor escuchando en puerto ${server.address().port}`);
@@ -67,12 +55,12 @@ io.on('connection', (socket) => {
     console.log('Usuario conectado');
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
-            console.log(chatMessages);
             chatMessages.forEach((mensaje) => __awaiter(void 0, void 0, void 0, function* () {
-                let saveMessages = new menasjesModel_1.Mensaje(mensaje);
+                let saveMessages = new mensajesModel_1.Mensaje(mensaje);
                 yield saveMessages.save();
             }));
             chatMessages = [];
+            chatMessagesFormatted = [];
         }
     });
     socket.emit('ingreso', { productos, chatMessages });
@@ -81,8 +69,10 @@ io.on('connection', (socket) => {
         productos.push(data);
     });
     socket.on('new message', (payload) => {
-        chatMessages.push(payload);
-        io.emit('chat', chatMessages);
+        socketNewMessage_1.messageFormatter(payload, chatMessages, chatMessagesFormatted);
+        const normalizedData = normalizr_1.normalize(chatMessagesFormatted, [normalizrSchemas_1.authorSchema]);
+        const denormalizedData = normalizr_1.denormalize(normalizedData.result, [normalizrSchemas_1.authorSchema], normalizedData.entities);
+        io.emit('chat', { chatMessages, normalizedData, denormalizedData });
     });
 });
 server.on("Error", (error) => {

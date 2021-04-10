@@ -67,16 +67,43 @@
 
     <div class="container mb-5">
         <form id="chatForm" class="form-group">
-        <div class="container form-group">
+        <div class="container form-group d-flex flex-column col-sm-8 col-md-10 col-lg-8">
             <h3>Centro de mensajes</h3>
-            <input id="email" placeholder="myEmail@something.com" required>
+            <div class="row">
+                <div class="col form-group" >
+                    <input id="id" class="form-control" placeholder="myEmail@something.com" required>
+                </div>
+                <div class="col form-group">
+                    <input id="nombre" class="form-control" placeholder="Tu nombre" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <input id="apellido" class="form-control" placeholder="Tu apellido" required>
+                </div>
+                <div class="col form-group">
+                    <input id="edad" class="form-control" placeholder="Edad" required>                
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col form-group">
+                    <input id="alias" class="form-control" placeholder="Alias" required>                
+                </div>
+                <div class="col form-group">
+                    <input id="avatar" class="form-control" placeholder="url avatar" required>                
+                </div>
+
+            </div>
+
         </div>
         <div id="chatContainer" class="container">
 
         </div>
-        <div class="container">
-                    <input type='text' id="messageToSend" placeholder="ingresa un mensaje...">
-                    <input type='submit' value="Enviar">
+        <div class="container d-flex flex-row col-8 ">
+                    <input type='text' class="form-control mr-4" id="messageToSend" placeholder="ingresa un mensaje...">
+                    <input type='submit' class="btn btn-success" value="Enviar">
             </form>
         </div>
     </div>
@@ -86,6 +113,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src='../DOMevents.js'></script>
+
 
 </body>
 </html>

@@ -1,8 +1,8 @@
 import express, { Application } from 'express';
 
-import { productRoutes } from './productRoutes';
+import { productRoutes } from './routes/productRoutes';
 
-import { viewsRoutes } from './viewsRoutes';
+import { viewsRoutes } from './routes/viewsRoutes';
 
 import path from 'path'; 
 
@@ -12,10 +12,15 @@ import { Socket } from 'socket.io';
 
 import MetodosServidor from './handlerClass';
 
-import { Mensaje } from './menasjesModel';
+import { Mensaje } from './db/mensajesModel';
 
-import mongoose from 'mongoose';
+import { authorSchema } from './normalizrSchemas/normalizrSchemas';
 
+import { normalize, denormalize } from 'normalizr';
+
+import { messageFormatter } from './utilities/socketNewMessage';
+
+import { CRUD } from './db/config'
 
 // Global variables
 
@@ -32,6 +37,8 @@ let productos:Array<object> = []
 export let instance = new MetodosServidor([]);
 
 let chatMessages:any = []
+
+let chatMessagesFormatted: any = []
 
 
 // Middleware
@@ -55,24 +62,9 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
-// Mongoose
+// DB & Mongoose
 
 CRUD()
-
-async function CRUD() {
-    try {
-        const URL = 'mongodb://localhost:27017/ecommerce'
-
-        let response = await mongoose.connect(URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useFindAndModify: false
-        })
-        console.log('Conectado a MongoDB')
-    } catch (e) {
-        console.log(e)
-    }
-}
 
 // Server Port config
 
@@ -80,18 +72,19 @@ const server:any = http.listen(PORT, () => {
     console.log(`Servidor escuchando en puerto ${server.address().port}`)
 });
 
-
 io.on('connection', (socket:Socket) => {
     console.log('Usuario conectado')
 
     socket.on('disconnect', () => {
         if (io.engine.clientsCount === 0) {
-            console.log(chatMessages)
+            
             chatMessages.forEach(async (mensaje:any) => {
                 let saveMessages = new Mensaje(mensaje)
                 await saveMessages.save()
             })
+            
             chatMessages = []
+            chatMessagesFormatted = []
         }
       });
 
@@ -103,8 +96,11 @@ io.on('connection', (socket:Socket) => {
     })
 
     socket.on('new message', (payload:any) => {
-        chatMessages.push(payload)
-        io.emit('chat', chatMessages);
+        messageFormatter(payload, chatMessages, chatMessagesFormatted)
+        const normalizedData = normalize(chatMessagesFormatted, [authorSchema])
+        const denormalizedData = denormalize(normalizedData.result, [authorSchema], normalizedData.entities)
+
+        io.emit('chat', {chatMessages, normalizedData, denormalizedData});
     })
 
 })

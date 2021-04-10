@@ -1,5 +1,6 @@
 const socket = io();
 
+
 const form = document.getElementById('form');
 
 const title = document.getElementById('title');
@@ -14,7 +15,13 @@ const table = document.getElementById('table');
 
 const tableContainer = document.getElementById('tableContainer');
 
-const user = document.getElementById('email')
+const user = document.getElementById('id')
+const nombre = document.getElementById('nombre')
+const apellido = document.getElementById('apellido')
+const edad = document.getElementById('edad')
+const alias = document.getElementById('alias')
+const avatar = document.getElementById('avatar')
+
 
 const chatForm = document.getElementById('chatForm')
 
@@ -81,9 +88,9 @@ const renderMessages = (payload) => {
     let html = payload.map(element => {
         return(`<div>
         <span style="color: blue; font-weight: bold;">
-        ${element.user} <span style="color: brown; font-weight: normal;">[${element.date}]</span>
+        ${element.id} <span style="color: brown; font-weight: normal;">[${element.date}]</span>
         </span>:
-        <em style="color: green">${element.message}</em> </div>`)
+        <em style="color: green">${element.text}</em> </div>`)
     }).join(" ");
     document.getElementById('chatContainer').innerHTML = html
 }
@@ -135,13 +142,18 @@ form.addEventListener('submit', function(e) {
 const addMessage = () => {
 
     let message = document.getElementById('messageToSend').value
-    let userEmail = user.value
     let date = new Date
     date = date.toLocaleString()
     socket.emit('new message', {
-        user: userEmail, 
-        message: message,
-        date: date})
+        email: user.value,
+        nombre: nombre.value,
+        apellido: apellido.value,
+        edad: edad.value,
+        alias: alias.value,
+        avatar: avatar.value, 
+        date: date,
+        text: message,
+    })
     
         document.getElementById('messageToSend').value = ''
 
@@ -164,7 +176,12 @@ socket.on('nuevo producto', data => {
 
 
 socket.on('chat', payload => {
-    renderMessages(payload)
+    renderMessages(payload.chatMessages)
+    console.log('NORMALIZED DATA', payload.normalizedData)
+    console.log('NORMALIZED DATA LENGTH', JSON.stringify(payload.normalizedData).length)
+    console.log('DENORMALIZED DATA', payload.denormalizedData)
+    console.log('DENORMALIZED DATA LENGTH', JSON.stringify(payload.denormalizedData).length)
+    console.log(`PORCENTAJE DE COMPRESIÓN:${Math.round((JSON.stringify(payload.denormalizedData).length / JSON.stringify(payload.normalizedData).length)*100) }%`)
 })
 
 

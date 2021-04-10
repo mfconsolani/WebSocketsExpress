@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express';
 
 import path from 'path';
 
-import { instance } from './server';
+import { instance } from '../server';
 
 export const viewsRoutes = express.Router();
 
@@ -16,5 +16,5 @@ viewsRoutes.get('/productos/vista', (req: Request, res: Response) => {
 // 
 
 viewsRoutes.get('/productos/socketForm', (req:Request, res:Response) => {
-    res.sendFile(path.join(__dirname, "../public/WSindex.html"))
+    res.sendFile(path.join(__dirname, "../../public/WSindex.html"))
 });

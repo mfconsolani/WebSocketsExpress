@@ -1,6 +1,6 @@
 import express, {Request, Response} from 'express';
 
-import { instance } from './server';
+import { instance } from '../server';
 
 export const productRoutes = express.Router();
 
