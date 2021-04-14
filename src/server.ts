@@ -22,6 +22,10 @@ import { messageFormatter } from './utilities/socketNewMessage';
 
 import { CRUD } from './db/config'
 
+import session from 'express-session';
+
+import cookieParser from 'cookie-parser';
+
 // Global variables
 
 const app:Application = require('express')();
@@ -62,6 +66,20 @@ app.use(express.json());
 
 app.use(express.urlencoded({extended: true}));
 
+app.use(cookieParser())
+
+app.use(session({
+    secret: 'super hard to guess',
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 6000
+    }
+  }))
+
+
+  
 // DB & Mongoose
 
 CRUD()

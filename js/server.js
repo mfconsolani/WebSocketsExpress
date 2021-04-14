@@ -24,6 +24,8 @@ const normalizrSchemas_1 = require("./normalizrSchemas/normalizrSchemas");
 const normalizr_1 = require("normalizr");
 const socketNewMessage_1 = require("./utilities/socketNewMessage");
 const config_1 = require("./db/config");
+const express_session_1 = __importDefault(require("express-session"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 // Global variables
 const app = require('express')();
 const http = require('http').Server(app);
@@ -45,6 +47,16 @@ app.set('views', './views');
 app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use(cookie_parser_1.default());
+app.use(express_session_1.default({
+    secret: 'super hard to guess',
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 6000
+    }
+}));
 // DB & Mongoose
 config_1.CRUD();
 // Server Port config

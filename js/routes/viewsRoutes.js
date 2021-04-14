@@ -13,6 +13,37 @@ exports.viewsRoutes.get('/productos/vista', (req, res) => {
     server_1.instance.renderApp(req, res);
 });
 // 
-exports.viewsRoutes.get('/productos/socketForm', (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, "../../public/WSindex.html"));
+exports.viewsRoutes.get('/productos/chat', (req, res) => {
+    if (req.session.user) {
+        return res.cookie('usuario', req.session.user, { maxAge: 6000 }).sendFile(path_1.default.join(__dirname, "../../public/WSindex.html"));
+    }
+    else {
+        return res.redirect('/login');
+    }
+});
+exports.viewsRoutes.get('/login', (req, res) => {
+    if (req.session.user) {
+        return res.redirect('/productos/chat');
+    }
+    return res.sendFile(path_1.default.join(__dirname, "../../public/login.html"));
+});
+exports.viewsRoutes.post('/login', (req, res) => {
+    let userName = req.body.username;
+    req.session.user = userName;
+    return res.cookie('usuario', req.session.user, { maxAge: 6000 }).redirect('/productos/chat');
+});
+exports.viewsRoutes.get('/logout', (req, res) => {
+    if (req.session.user) {
+        req.session.destroy((err) => {
+            if (!err) {
+                return res.sendFile(path_1.default.join(__dirname, "../../public/farewell.html"));
+            }
+            else {
+                console.log('Se produjo un error:', err);
+            }
+        });
+    }
+    else if (!req.session.user) {
+        return res.redirect('/login');
+    }
 });

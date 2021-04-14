@@ -66,7 +66,7 @@ class MetodosServidor {
         return response.status(200).send({ alerta: 'producto no encontrado' });
     }
     renderApp(request, response) {
-        response.render(path_1.default.join(__dirname, '../views/layouts/main'), { data: this.database });
+        response.render(path_1.default.join(__dirname, '../views/layouts/main.hbs'), { data: this.database });
     }
 }
 ;
