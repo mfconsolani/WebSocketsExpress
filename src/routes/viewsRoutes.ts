@@ -23,7 +23,7 @@ viewsRoutes.get('/productos/vista', (req: Request, res: Response) => {
 
 viewsRoutes.get('/productos/chat', (req:Request, res:Response) => {
     if (req.session.user){
-        return res.cookie('usuario', req.session.user, {maxAge:6000}).sendFile(path.join(__dirname, "../../public/WSindex.html"))
+        return res.cookie('usuario', req.session.user, {maxAge:60000}).sendFile(path.join(__dirname, "../../public/WSindex.html"))
     } else {
         return res.redirect('/login')
     }
@@ -39,7 +39,7 @@ viewsRoutes.get('/login', (req:Request, res:Response) => {
 viewsRoutes.post('/login', (req:Request, res:Response) => {
     let userName = req.body.username
     req.session.user = userName
-    return res.cookie('usuario', req.session.user, {maxAge:6000}).redirect('/productos/chat')
+    return res.cookie('usuario', req.session.user, {maxAge:60000}).redirect('/productos/chat')
 
 });
 
