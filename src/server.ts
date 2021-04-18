@@ -28,6 +28,8 @@ import cookieParser from 'cookie-parser';
 
 import MongoStore from 'connect-mongo'
 
+import dotenv from 'dotenv'
+
 // Global variables
 
 const app:Application = require('express')();
@@ -72,11 +74,13 @@ app.use(cookieParser())
 
 const advanceOptions = {useNewUrlParser: true, useUnifiedTopology: true}
 
+dotenv.config()
+
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://alberto:alberto123@cluster0.3y0bt.mongodb.net/session?retryWrites=true&w=majority',
+        mongoUrl: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_USER_PASSWORD}@cluster0.3y0bt.mongodb.net/session?retryWrites=true&w=majority`,
         mongoOptions: advanceOptions,
-        ttl: 60
+        ttl: 600
     }),
     secret: 'super hard to guess',
     resave: false,
