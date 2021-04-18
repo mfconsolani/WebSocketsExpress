@@ -26,6 +26,8 @@ import session from 'express-session';
 
 import cookieParser from 'cookie-parser';
 
+import MongoStore from 'connect-mongo'
+
 // Global variables
 
 const app:Application = require('express')();
@@ -68,14 +70,17 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(cookieParser())
 
+const advanceOptions = {useNewUrlParser: true, useUnifiedTopology: true}
+
 app.use(session({
+    store: MongoStore.create({
+        mongoUrl: 'mongodb+srv://alberto:alberto123@cluster0.3y0bt.mongodb.net/session?retryWrites=true&w=majority',
+        mongoOptions: advanceOptions,
+        ttl: 60
+    }),
     secret: 'super hard to guess',
     resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    cookie: {
-        maxAge: 60000
-    }
+    saveUninitialized: false
   }))
 
 

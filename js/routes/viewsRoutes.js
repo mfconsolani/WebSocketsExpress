@@ -15,7 +15,7 @@ exports.viewsRoutes.get('/productos/vista', (req, res) => {
 // 
 exports.viewsRoutes.get('/productos/chat', (req, res) => {
     if (req.session.user) {
-        return res.cookie('usuario', req.session.user, { maxAge: 6000 }).sendFile(path_1.default.join(__dirname, "../../public/WSindex.html"));
+        return res.cookie('usuario', req.session.user, { maxAge: 60000 }).sendFile(path_1.default.join(__dirname, "../../public/WSindex.html"));
     }
     else {
         return res.redirect('/login');
@@ -30,7 +30,7 @@ exports.viewsRoutes.get('/login', (req, res) => {
 exports.viewsRoutes.post('/login', (req, res) => {
     let userName = req.body.username;
     req.session.user = userName;
-    return res.cookie('usuario', req.session.user, { maxAge: 6000 }).redirect('/productos/chat');
+    return res.cookie('usuario', req.session.user, { maxAge: 60000 }).redirect('/productos/chat');
 });
 exports.viewsRoutes.get('/logout', (req, res) => {
     if (req.session.user) {
